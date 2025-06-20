@@ -7,15 +7,16 @@ st.title("FitoBot")
 nombre = st.text_input("Cual es tu nombre?")
 
 if st.button("Saludar"):
-    st.write(f"Hola, {nombre}, Como te va?")
+    st.write(f"Hola, {nombre}. Habla conmigo escribiendome un mensaje en la barra de abajo!")
     
 
 modelos = ['llama3-8b-8192', 'llama3-70b-8192', 'gemma2-9b-it']
 
 def configurarPagina():
     st.title("Habla con FitoBot")
-    st.sidebar.title("Configurar la IA")
+    st.sidebar.title("Configurá la IA")
     elegirModelo = st.sidebar.selectbox("Elegí un modelo", options=modelos, index = 0)
+    st.sidebar.text("El mensaje de la IA varía según el modelo que le pongas.")
     return elegirModelo
 
 def ConectarGroq():
@@ -45,7 +46,7 @@ def mostrar_historial():
 
 
 def area_chat():
-    contenedorDelChat = st.container(height=300, border=True)
+    contenedorDelChat = st.container(height=400, border=True)
     with contenedorDelChat: 
         mostrar_historial()
 
@@ -63,7 +64,7 @@ def main():
     modelo = configurarPagina()
     clienteUsuario = ConectarGroq()
     inicializar_estado()
-    mensaje = st.chat_input("Escribi tu prompt")
+    mensaje = st.chat_input("Escribi tu mensaje")
     area_chat()
     if mensaje:
         actualizar_historial("user", mensaje,"😁")
@@ -77,5 +78,6 @@ def main():
             st.rerun()
 if __name__ == "__main__":
     main()
+
 
 
