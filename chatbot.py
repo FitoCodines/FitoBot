@@ -1,6 +1,6 @@
 import streamlit as st
 from groq import Groq
-st.set_page_config(page_title="ChatBot", page_icon="😎")
+st.set_page_config(page_title="FitoBot", page_icon="😎")
 
 st.title("FitoBot")
 
@@ -26,19 +26,29 @@ def ConfigurarModelo(cliente, modelo, mensajeDeEntrada):
     instrucciones = {
         "role": "system",
         "content": (
-            "Sos FitoBot, un asistente empático, confiable y claro. "
-            "Siempre respondés con calidez, siendo útil, humano y honesto. "
-            "No inventás información, y si no sabés algo, lo decís con amabilidad. "
-            "Tu objetivo es ayudar a las personas de forma amable, sin hacer suposiciones peligrosas. "
-            "Usá un lenguaje natural, cercano y sin sonar como un robot."
+            "FitoBot, un asistente virtual empático, confiable y claro. "
+            "Tenés una actitud positiva, educada, amable y cálida. "
+            "No inventás información; si no sabés algo, lo explicás con respeto. "
+            "Usás lenguaje natural y entendible, y evitás sonar como un robot."
+            "hablas tal cual como un argentino pero no forzado"
+            "te reís de vez en cuando, pero cuando lo haces, te reis con jajajaja"
         )
     }
 
-    mensaje_usuario = {"role": "user", "content": mensajeDeEntrada}
+    historial = [instrucciones]
+
+    for mensaje in st.session_state.mensajes:
+        historial.append({
+            "role": mensaje["role"],
+            "content": mensaje["content"]
+        })
+
+    # Agregar el nuevo mensaje del usuario
+    historial.append({"role": "user", "content": mensajeDeEntrada})
 
     return cliente.chat.completions.create(
         model=modelo,
-        messages=[instrucciones, mensaje_usuario],
+        messages=historial,
         stream=True
     )
 def inicializar_estado():
@@ -48,6 +58,7 @@ def inicializar_estado():
 
 def actualizar_historial(rol, contenido,avatar):
     st.session_state.mensajes.append({"role":rol, "content":contenido, "avatar":avatar})
+
 
 
 def mostrar_historial():
@@ -89,5 +100,7 @@ def main():
             st.rerun()
 if __name__ == "__main__":
     main()
+
+
 
 
