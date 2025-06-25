@@ -22,14 +22,25 @@ def configurarPagina():
 def ConectarGroq():
     claveSecreta = st.secrets["claveApi"]
     return Groq(api_key=claveSecreta)
-
 def ConfigurarModelo(cliente, modelo, mensajeDeEntrada):
+    instrucciones = {
+        "role": "system",
+        "content": (
+            "Sos FitoBot, un asistente empático, confiable y claro. "
+            "Siempre respondés con calidez, siendo útil, humano y honesto. "
+            "No inventás información, y si no sabés algo, lo decís con amabilidad. "
+            "Tu objetivo es ayudar a las personas de forma amable, sin hacer suposiciones peligrosas. "
+            "Usá un lenguaje natural, cercano y sin sonar como un robot."
+        )
+    }
+
+    mensaje_usuario = {"role": "user", "content": mensajeDeEntrada}
+
     return cliente.chat.completions.create(
         model=modelo,
-        messages =[{"role": "user", "content": mensajeDeEntrada}],
+        messages=[instrucciones, mensaje_usuario],
         stream=True
     )
-
 def inicializar_estado():
     if "mensajes" not in st.session_state:
         st.session_state.mensajes = []
@@ -78,6 +89,5 @@ def main():
             st.rerun()
 if __name__ == "__main__":
     main()
-
 
 
